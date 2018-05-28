@@ -10,17 +10,17 @@ typedef struct {
 } Game;
 
 // ....................................................
-
-typedef enum {
-	MENU_MAIN,
-	MENU_ABOUT
-} MENU_ID;
+#include "menus.h" // typedef enum { MENU_MAIN, MENU_ABOUT } MENU_ID;
 
 typedef struct {
 	MENU_ID active_menu;
 	MenuMain* menu_main;
 	MenuAbout* menu_about;
 } MenuManager;
+
+if (game->active_view == VIEW_MENU) {
+	game->active_view = menu_manager_events(game->menu_manager);	
+}
 
 // may have to have singleton for music, textures, assets, etc.
 // ....................................................
@@ -49,7 +49,7 @@ MenuMain* menu_main_create(const char* background_filename);
 
 void menu_main_destroy(MenuMain* menu_main);
 
-void menu_main_events(MenuMain* menu_main, SDL_Event* event);
+MENU_ID menu_main_events(MenuMain* menu_main, SDL_Event* event);
 
 void menu_main_update(MenuMain* menu_main);
 
@@ -64,6 +64,7 @@ MenuMain* menu_main_create(const char* background_filename, TTF_Font* font)
 		
 	int label_width;
 	int label_height;
+	int label_draw_index = 0;
 
 	SDL_Surface* local_play_surface = TTF_RenderText_Solid(font, "LOCAL PLAY", menu_main->label_selection_colours[IS_SELECTED]);
 	menu_main->labels[MENU_MAIN_LOCAL_PLAY] = SDL_CreateTextureFromSurface(local_play_surface);
@@ -71,9 +72,9 @@ MenuMain* menu_main_create(const char* background_filename, TTF_Font* font)
 	SDL_QueryTexture(menu_main->labels, NULL, NULL, &label_width, &label_height);
 	menu_main->label_positions[MENU_MAIN_LOCAL_PLAY] = {
 		.x = field_width / 2 - label_width / 2,
-		.y = ,
+		.y = field_height / MENU_MAIN__NUM * label_draw_index++;
 		.w = label_width,
-		.h = label_height,
+		.h = label_height
 	};
 
 	menu_main->labels = {
@@ -111,14 +112,16 @@ void menu_main_destroy(MenuMain* menu_main)
 	free(menu_main);
 }
 
-void menu_main_events(MenuMain* menu_main, SDL_Event* event)
+int menu_main_events(MenuMain* menu_main, SDL_Event* event)
 {
 	if (event->type == SDL_MOUSEMOTION) {
 					
 	} else if (event->type == SDL_MOUSEBUTTON_DOWN) {
 				
 	} else if (event->type == SDL_KEYDOWN) {
-				
+		if (select_menu_option) {
+			return menu_option_id;		
+		}				
 	} else {
 		return;		
 	}
@@ -126,48 +129,8 @@ void menu_main_events(MenuMain* menu_main, SDL_Event* event)
 
 void menu_main_render(MenuMain* menu_main, SDL_Renderer* renderer)
 {
+	SDL_RenderCopy(menu_main->background, NULL, NULL);
 	for (size_t label_index = 0; label_index < MENU_MAIN__NUM; ++label_index) {
-		SDL_RenderCopy		
+		SDL_RenderCopy();
 	}
 }
-
-int show_menu(SDL_Texture* background, TTF_Font* font)
-{
-	// passing &obj to function is useful when the object's values are going to be changing a lot
-	SDL_Event event;
-	while (true) {
-		time = SDL_GetTicks();
-		/* SDL_MOUSEMOTION
-		if (x in continue_pos) {
-			selected[continue] = true;		
-			new texture with selected colour
-		}
-		SDL_MOUSEBUTTON_DOWN
-		if (x in continue_pos) {
-			selected_id = continue_selected_id;			
-		}
-		SDL_KEYDOWN
-		selected[i++/--];
-		*/
-	}
-
-
-}
-
-
-
-
-
-
-
-
-typedef struct {
-	MENU_MANAGER_OPTION active_option;
-	STRETCHY_BUF(MenuScreen* ) menu_screen;	
-} MenuManager;
-
-typedef struct {
-	const char* text;
-	int x_pos, y_pos;
-} MenuScreen;
-
