@@ -1,0 +1,4 @@
+img (texture wrapper)
+sprite (list of texture wrappers)
+block,  (sprite with id and other flags)
+cfg 
